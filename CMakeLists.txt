@@ -5,8 +5,10 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("tools")
 
+include_directories("./include")
+
 # 将源代码添加到此项目的可执行文件。
-add_executable (tools "tools.cpp" "tools.h" "dump/getDump.h" "include/pch.h" "dump/enum2string.h")
+add_executable (tools "tools.cpp" "tools.h" "dump/getDump.h" "include/pch.h" "dump/enum2string.h" "dump/hyLog.h" "dump/hyLog.cpp" "dump/hyTimeStamp.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET tools PROPERTY CXX_STANDARD 20)
