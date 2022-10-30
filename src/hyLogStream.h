@@ -1,5 +1,5 @@
-#ifndef __HYLOG_H__
-#define __HYLOG_H__
+#ifndef __HYLOGSTREAM_H__
+#define __HYLOGSTREAM_H__
 
 #include "pch.h"
 
@@ -192,96 +192,34 @@ namespace hying
 
 		template<typename T>
 		void formatInteger(T);
-	
+
 	private:
 		Buffer buffer_;
 		static const int kMaxNumericSize = 48;
 	};
 
-
-
-
-	class Logger
+	class Fmt // : noncopyable
 	{
 	public:
-		enum LogLevel
-		{
-			TRACE,
-			DEBUG,
-			INFO,
-			WARN,
-			ERROR,
-			FATAL,
-			NUM_LOG_LEVELS,
-		};
+		template<typename T>
+		Fmt(const char* fmt, T val);
 
-		class SourceFile
-		{
-		public:
-			template<int N>
-			SourceFile(const char(&arr)[N])
-				: data_(arr), size(N - 1)
-			{
-				const char* slash = strrchr(data_, '/');
-				if (slash)
-				{
-					data_ = slash + 1;
-					size_ -= static_cast<int>(data_ - arr);
-				}
-			}
-
-			explicit SourceFile(const char* filename)
-				: data_(filename)
-			{
-				const char* slash = strrchr(filename, '/');
-				if (slash)
-				{
-					data_ = slash + 1;
-				}
-				size_ = static_cast<int>(strlen(data_));
-			}
-
-			const char* data_;
-			int size_;
-		};
-
-
-		Logger(SourceFile file, int line);
-		Logger(SourceFile file, int line, LogLevel level);
-		Logger(SourceFile file, int line, LogLevel level, const char* func);
-		Logger(SourceFile file, int line, bool toAbort);
-		~Logger();
-
-		LogStream& stream() { return impl_.stream_; }
-
-		static LogLevel logLevel();
-		static void setLogLevel(LogLevel level);
-
-		typedef void (*OutputFunc)(const char* msg, int len);
-		typedef void (*FlushFunc)();
-		static void setOutput(OutputFunc);
-		static void setFlush(FlushFunc);
-		static void setTimeZone(const TimeZone& tz);
+		const char* data() const { return buf_; }
+		int length() const { return length_; }
 
 	private:
-
-		class Impl
-		{
-		public:
-			typedef Logger::LogLevel LogLevel;
-			Impl(LogLevel level, int old_errno, const SourceFile& file, int line);
-			void formatTime();
-			void finish();
-
-			Timestamp time_;
-			LogStream stream_;
-			LogLevel level_;
-			int line_;
-			SourceFile basename_;
-		};
-
-		Impl impl_;
+		char buf_[32];
+		int length_;
 	};
+
+	inline LogStream& operator<<(LogStream& s, const Fmt& fmt)
+	{
+		s.append(fmt.data(), fmt.length());
+		return s;
+	}
+
+	std::string formatSI(int64_t n);
+	std::string formatIEC(int64_t n);
 }
 
 #endif

@@ -8,7 +8,7 @@ project ("tools")
 include_directories("./include")
 
 # 将源代码添加到此项目的可执行文件。
-add_executable (tools "tools.cpp" "tools.h" "dump/getDump.h" "include/pch.h" "dump/enum2string.h" "dump/hyLog.h" "dump/hyLog.cpp" "dump/hyTimeStamp.cpp")
+add_executable (tools "tools.cpp" "tools.h" "dump/getDump.h" "include/pch.h" "dump/enum2string.h" "dump/hyLog.h" "dump/hyLog.cpp" "dump/hyTimeStamp.cpp"    "dump/hyCurrentThread.h" "dump/hyCurrentThread.cpp" "dump/hyThread.h" "dump/hyThread.cpp" "src/hyLogStream.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET tools PROPERTY CXX_STANDARD 20)

@@ -2,11 +2,14 @@
 #define __FCH_H__
 
 #include <iostream>
+#include <assert.h>
 
 #ifdef WIN32
 #define UNICODE
 #include <Windows.h>
 #include <shlwapi.h>
+#include <inttypes.h>
+#define __STDC_FORMAT_MACROS
 #pragma comment(lib, "shlwapi.lib")
 #undef ERROR
 
@@ -29,8 +32,13 @@ static int gettimeofday(struct timeval* tp, void* tzp)
 	return (0);
 }
 
+#define __thread thread_local
+#define strerror_r(err,buf,len) strerror_s(buf,len,err)
+#define gmtime_r(sec, tmt) gmtime_s(tmt, sec) 
+
 #else
 #include <sys/time.h>
 #endif
+
 
 #endif
