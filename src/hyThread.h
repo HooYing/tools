@@ -3,41 +3,43 @@
 
 #include "pch.h"
 #include <thread>
-#include <condition_variable>
+#include <functional>
+#include "hyCondCount.h"
 
 namespace hying
 {
-	// 这样封装可以在一个类中创建多个线程
-	class Thread;
-
-	class IThreadCallBack
-	{
-	public:
-		virtual void OnActivate(Thread* pThread) = 0;
-	};
-
 	class Thread
 	{
 	public:
-		Thread();
-		virtual ~Thread();
+		typedef	std::function<void()> ThreadFunc;
+		explicit Thread(ThreadFunc, const std::string& name = std::string());
+		~Thread();
 
-		bool Startup(IThreadCallBack* pCallBack);
+		void start();
+		void join();
 
-		bool DeActivate();
+		bool started() const { return m_started; }
 
-		bool WaitForStop(long milliseconds = -1);
+		int tid() const { return m_tid; }
 
-	private:
+		const std::string& name() const { return m_name; }
 
-		void run();
+		static int numCreated() { return m_numCreated; }
+
 		
 	private:
 		
-		mutable std::mutex m_mutex;
-		IThreadCallBack* m_pCallBack;
+		void setDefaultName();
+		bool m_started;
+		bool m_joined;
 		std::thread m_thread;
-		std::condition_variable m_condition;
+		int m_tid;
+		ThreadFunc m_func;
+		std::string m_name;
+		CondCount m_latch;
+
+		static std::atomic<int> m_numCreated;
+		
 	};
 }
 

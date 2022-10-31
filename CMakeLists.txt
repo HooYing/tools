@@ -7,8 +7,16 @@ project ("tools")
 
 include_directories("./include")
 
+file(GLOB_RECURSE CPP_FILES src/*.cpp tools.cpp)
+message(${CPP_FILES})
+list(REMOVE_ITEM CPP_FILES ${PROJECT_SOURCE_DIR}/src/hyThread.cpp)
+message(${CPP_FILES})
+
+set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi /Ob0 /O2")
+message(${CMAKE_CXX_FLAGS_DEBUG})
+
 # 将源代码添加到此项目的可执行文件。
-add_executable (tools "tools.cpp" "tools.h" "dump/getDump.h" "include/pch.h" "dump/enum2string.h" "dump/hyLog.h" "dump/hyLog.cpp" "dump/hyTimeStamp.cpp"    "dump/hyCurrentThread.h" "dump/hyCurrentThread.cpp" "dump/hyThread.h" "dump/hyThread.cpp" "src/hyLogStream.h")
+add_executable (tools ${CPP_FILES})
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET tools PROPERTY CXX_STANDARD 20)

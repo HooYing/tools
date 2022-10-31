@@ -180,6 +180,9 @@ namespace hying
 	{
 	}
 
+	template class FixedBuffer<kSmallBuffer>;
+	template class FixedBuffer<kLargeBuffer>;
+
 	void LogStream::staticCheck()
 	{
 		static_assert(kMaxNumericSize - 10 > std::numeric_limits<double>::digits10,
@@ -202,7 +205,43 @@ namespace hying
 		}
 	}
 
-	LogStream& LogStream::operator<<(const void* p)
+	LogStream& LogStream::operator << (int v)
+	{
+		formatInteger(v);
+		return *this;
+	}
+
+	LogStream& LogStream::operator << (unsigned int v)
+	{
+		formatInteger(v);
+		return *this;
+	}
+
+	LogStream& LogStream::operator << (long v)
+	{
+		formatInteger(v);
+		return *this;
+	}
+
+	LogStream& LogStream::operator << (unsigned long v)
+	{
+		formatInteger(v);
+		return *this;
+	}
+
+	LogStream& LogStream::operator << (long long v)
+	{
+		formatInteger(v);
+		return *this;
+	}
+
+	LogStream& LogStream::operator << (unsigned long long v)
+	{
+		formatInteger(v);
+		return *this;
+	}
+
+	LogStream& LogStream::operator << (const void* p)
 	{
 		uintptr_t v = reinterpret_cast<uintptr_t>(p);
 		if (buffer_.avail() >= kMaxNumericSize)

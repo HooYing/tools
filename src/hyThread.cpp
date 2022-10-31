@@ -1,59 +1,61 @@
 #include "hyThread.h"
+#include "hyCurrentThread.h"
 
 namespace hying
 {
-	bool Thread::Startup(IThreadCallBack* pCallBack)
-	{
-		if (DeActivate())
-		{
-			m_pCallBack = pCallBack;
-			std::unique_lock<std::mutex> lck(m_mutex);
-			m_thread = std::thread(std::bind(&Thread::run, this));
-		}
-		else
-		{
+    struct ThreadData
+    {
+        typedef Thread::ThreadFunc ThreadFunc;
+        ThreadFunc func_;
+        std::string name_;
+        int* tid_;
+        CondCount* latch_;
 
-		}
-	}
+        ThreadData(ThreadFunc func,
+            const std::string& name,
+            int* tid,
+            CondCount* latch)
+            : func_(std::move(func)),
+            name_(name),
+            tid_(tid),
+            latch_(latch)
+        { }
 
-	void Thread::run()
-	{
-		if (m_pCallBack == NULL)
-		{
+        void runInThread()
+        {
+            *tid_ = CurrentThread::tid();
+            tid_ = NULL;
+            latch_->countDown();
+            latch_ = NULL;
 
-		}
-
-		m_pCallBack->OnActivate(this);
-
-		std::unique_lock<std::mutex> lck(m_mutex);
-		m_condition.notify_all();
-	}
-
-	bool Thread::DeActivate()
-	{
-		
-	}
-
-	bool Thread::WaitForStop(long milliseconds)
-	{
-		if (milliseconds == -1)
-		{
-			std::unique_lock<std::mutex> lck(m_mutex);
-			m_condition.wait(lck);
-			return true;
-		}
-		else
-		{
-			std::unique_lock<std::mutex> lck(m_mutex);
-			std::cv_status status = m_condition.wait_for(lck, std::chrono::milliseconds(milliseconds));
-			if (status == std::cv_status::timeout)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		}
-	}
+            CurrentThread::t_threadName = name_.empty() ? "muduoThread" : name_.c_str();
+            ::prctl(PR_SET_NAME, muduo::CurrentThread::t_threadName);
+            try
+            {
+                func_();
+                muduo::CurrentThread::t_threadName = "finished";
+            }
+            catch (const Exception& ex)
+            {
+                muduo::CurrentThread::t_threadName = "crashed";
+                fprintf(stderr, "exception caught in Thread %s\n", name_.c_str());
+                fprintf(stderr, "reason: %s\n", ex.what());
+                fprintf(stderr, "stack trace: %s\n", ex.stackTrace());
+                abort();
+            }
+            catch (const std::exception& ex)
+            {
+                muduo::CurrentThread::t_threadName = "crashed";
+                fprintf(stderr, "exception caught in Thread %s\n", name_.c_str());
+                fprintf(stderr, "reason: %s\n", ex.what());
+                abort();
+            }
+            catch (...)
+            {
+                muduo::CurrentThread::t_threadName = "crashed";
+                fprintf(stderr, "unknown exception caught in Thread %s\n", name_.c_str());
+                throw; // rethrow
+            }
+        }
+    };
 }

@@ -70,42 +70,14 @@ namespace hying
 			buffer_.append(v ? "1" : "0", 1);
 			return *this;
 		}
-
-		LogStream& operator << (int v)
-		{
-			formatInteger(v);
-			return *this;
-		}
-
-		LogStream& operator << (unsigned int v)
-		{
-			formatInteger(v);
-			return *this;
-		}
-
-		LogStream& operator << (long v)
-		{
-			formatInteger(v);
-			return *this;
-		}
-
-		LogStream& operator << (unsigned long v)
-		{
-			formatInteger(v);
-			return *this;
-		}
-
-		LogStream& operator << (long long v)
-		{
-			formatInteger(v);
-			return *this;
-		}
-
-		LogStream& operator << (unsigned long long v)
-		{
-			formatInteger(v);
-			return *this;
-		}
+		
+		// 因为使用到了模板函数formatInteger，因此要定义在cpp上
+		LogStream& operator << (int v);
+		LogStream& operator << (unsigned int v);
+		LogStream& operator << (long v);
+		LogStream& operator << (unsigned long v);
+		LogStream& operator << (long long v);
+		LogStream& operator << (unsigned long long v);
 
 		LogStream& operator << (short v)
 		{
