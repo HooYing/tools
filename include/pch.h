@@ -32,6 +32,16 @@ static int gettimeofday(struct timeval* tp, void* tzp)
 	return (0);
 }
 
+inline std::wstring gbk_to_utf16(const char* gbk_data)
+{
+	DWORD dwlen = MultiByteToWideChar(CP_ACP, 0, gbk_data, -1, NULL, 0);
+	wchar_t* utf16_data = new TCHAR[dwlen + 1];
+	MultiByteToWideChar(CP_ACP, 0, gbk_data, -1, utf16_data, dwlen);
+	std::wstring data(utf16_data);
+	delete[] utf16_data;
+	return data;
+}
+
 #define __thread thread_local
 #define strerror_r(err,buf,len) strerror_s(buf,len,err)
 #define gmtime_r(sec, tmt) gmtime_s(tmt, sec) 

@@ -8,38 +8,37 @@
 
 namespace hying
 {
+	class Thread;
+
+	class IThreadCallBack
+	{
+	public:
+		virtual void OnActive(Thread* pThread) = 0;
+	};
+
 	class Thread
 	{
 	public:
-		typedef	std::function<void()> ThreadFunc;
-		explicit Thread(ThreadFunc, const std::string& name = std::string());
+		explicit Thread(IThreadCallBack* pCallBack, const std::string& name = std::string());
 		~Thread();
 
 		void start();
-		void join();
+		void stop();
 
-		bool started() const { return m_started; }
+		bool isRunning();
 
-		int tid() const { return m_tid; }
-
-		const std::string& name() const { return m_name; }
-
-		static int numCreated() { return m_numCreated; }
-
-		
 	private:
-		
-		void setDefaultName();
-		bool m_started;
-		bool m_joined;
+
+		void _run();
+
+		CondCount m_cond;
 		std::thread m_thread;
 		int m_tid;
-		ThreadFunc m_func;
 		std::string m_name;
-		CondCount m_latch;
+		std::atomic<bool> m_running;
+		IThreadCallBack* m_pCallBack;
 
-		static std::atomic<int> m_numCreated;
-		
+		static std::atomic_int numCreated;
 	};
 }
 

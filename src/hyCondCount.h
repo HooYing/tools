@@ -10,7 +10,7 @@ namespace hying
 	class CondCount
 	{
 	public:
-		explicit CondCount(int count);
+		explicit CondCount(int count = 1);
 
 		void wait();
 
