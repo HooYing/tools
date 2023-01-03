@@ -1,4 +1,4 @@
-#include "../src/hyThread.h"
+#include "../src/Thread.h"
 
 class TestThread : public hying::IThreadCallBack
 {
@@ -21,7 +21,7 @@ public:
 
 private:
 
-	void OnActive(hying::Thread* pThread) override
+	void OnActive() override
 	{
 		while (m_thread.isRunning())
 		{
@@ -36,10 +36,10 @@ private:
 
 };
 
-int main()
-{
-	TestThread th;
-	th.start();
-	Sleep(3000);
-	return 0;
-}
+//int main()
+//{
+//	TestThread th;
+//	th.start();
+//	Sleep(10000);
+//
+//}

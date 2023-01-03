@@ -2,8 +2,8 @@
 #define __HYLOG_H__
 
 #include "pch.h"
-#include "hyTimeStamp.h"
-#include "hyLogStream.h"
+#include "TimeStamp.h"
+#include "LogStream.h"
 
 namespace hying
 {

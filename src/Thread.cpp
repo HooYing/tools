@@ -1,5 +1,6 @@
-#include "hyThread.h"
-#include "hyCurrentThread.h"
+#include "Thread.h"
+#include "CurrentThread.h"
+#include "Utils.h"
 
 namespace hying
 {
@@ -48,6 +49,14 @@ namespace hying
 		return m_running;
 	}
 
+	void Thread::join()
+	{
+		if (m_running)
+		{
+			m_thread.join();
+		}
+	}
+
 	void Thread::_run()
 	{
 		m_tid = CurrentThread::tid();
@@ -61,7 +70,7 @@ namespace hying
 #endif
 
 		try {
-			m_pCallBack->OnActive(this);
+			m_pCallBack->OnActive();
 			m_running = false;
 			CurrentThread::t_threadName = "finished";
 		}

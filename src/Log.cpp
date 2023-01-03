@@ -1,18 +1,10 @@
-#include "hyLog.h"
-#include "hyCurrentThread.h"
+#include "Log.h"
+#include "CurrentThread.h"
 
 namespace hying 
 {
-	__thread char t_errnobuf[512];
 	__thread char t_time[64];
 	__thread time_t t_lastSecond;
-
-	// 输出具体错误信息
-	const char* strerror_tl(int savedErrno)
-	{
-		strerror_r(savedErrno, t_errnobuf, sizeof t_errnobuf);
-		return t_errnobuf;
-	}
 
 	// 环境变量
 	Logger::LogLevel initLogLevel()

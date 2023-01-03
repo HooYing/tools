@@ -1,4 +1,4 @@
-#include "hyCurrentThread.h"
+#include "CurrentThread.h"
 
 namespace hying
 {

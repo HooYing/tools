@@ -1,4 +1,4 @@
-#include "hyCondCount.h"
+#include "CondCount.h"
 
 namespace hying
 {

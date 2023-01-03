@@ -1,4 +1,4 @@
-#include "hyLogStream.h"
+#include "LogStream.h"
 
 namespace hying
 {

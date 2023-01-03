@@ -4,7 +4,7 @@
 #include "pch.h"
 #include <thread>
 #include <functional>
-#include "hyCondCount.h"
+#include "CondCount.h"
 
 namespace hying
 {
@@ -13,7 +13,7 @@ namespace hying
 	class IThreadCallBack
 	{
 	public:
-		virtual void OnActive(Thread* pThread) = 0;
+		virtual void OnActive() = 0;
 	};
 
 	class Thread
@@ -26,6 +26,8 @@ namespace hying
 		void stop();
 
 		bool isRunning();
+
+		void join();
 
 	private:
 
